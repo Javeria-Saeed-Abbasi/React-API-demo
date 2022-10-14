@@ -6,14 +6,15 @@ import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
 import Container from 'react-bootstrap/Container';
 import { useEffect, useState } from "react";
-
-const Profile = ({id,name,email,phone,image,sub_user }) => {
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCoffee } from '@fortawesome/free-solid-svg-icons';
+const Profile = ({id,name,email,phone,image}) => {
 console.log( "id : "+ id  ,
  "name : "+ name,
  "email : " + email , 
  "phone : " + phone, 
  "image : " + image,
- "sub_user" + sub_user );
+ );
   return (
     <>
     <Container>
@@ -25,7 +26,7 @@ console.log( "id : "+ id  ,
         Email: {email}
         <br/>
         Phone: {phone}
-       
+        <FontAwesomeIcon icon="coffee" />
         </Card.Text>
         <Button variant="primary">Go somewhere</Button>
       </Card.Body>

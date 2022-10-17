@@ -4,14 +4,16 @@ import Card from 'react-bootstrap/Card';
 import Container from 'react-bootstrap/Container';
 import { useEffect, useState } from "react";
 import { FaEdit} from "react-icons/fa";
+import { FaFilePdf} from 'react-icons/fa'
 import { App } from 'react-bootstrap-icons';
 import { AppCss } from "../App.css";
 import axios from 'axios';
 import Form from 'react-bootstrap/Form';
 import { baseURL } from '../App';
+import pdfImg from '../images/pdfImg.jpg';
+import DummyAvatar from '../images/dummy-image.jpg';
 
 const Profile = ({id,name,email,phone,image}) => {
-  // const [displayPic ,setDisplayPic] = useState (false);
   const [selectedFile, setSelectedFile] = useState(image);
   // const imageMimeType = /image\/(png|jpg|jpeg)/i;
 
@@ -23,19 +25,22 @@ const Profile = ({id,name,email,phone,image}) => {
 //  );
  const fileSelectedHandler = (event) =>{
    console.log(event.target.files[0]);
-   if (event.target.files[0].type === 'image/jpeg') {
-     setSelectedFile(URL.createObjectURL(event.target.files[0]));
+   if (event.target.files[0].type === 'application/pdf') {
+    setSelectedFile(pdfImg)
+    alert('Selected File is PDF');
    }
-   else {
-    alert("Selected file is not png/jpg/jpeg!")
+   else if(event.target.files[0].type === 'image/png' , 'image/jpg' , 'image/jpeg'){
+    setSelectedFile(URL.createObjectURL(event.target.files[0]));
+    alert('Selected File is Image');
    }
-  console.log(selectedFile.type);
-
+   else if(event.target.files[0].type === 'text/plain'){
+    setSelectedFile(DummyAvatar);
+    alert('Selected file is not acceptable');
+   }
  }
  const fileUploadHandler = () =>{
 const fd = new FormData();
     fd.append("image", selectedFile);
-  
  }
 
   return (

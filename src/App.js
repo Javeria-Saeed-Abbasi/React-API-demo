@@ -5,6 +5,8 @@ import "bootstrap/dist/js/bootstrap.js";
 import { useEffect, useState } from "react";
 import Profile from "./component/profile";
 
+export const baseURL = "https://buybestthemes.com/findmyfitness_api/api";
+
 function App() {
   const [data, setData] = useState({})
   const [displayProfile ,setDisplayProfile] = useState (false);
@@ -24,7 +26,6 @@ function App() {
   
   // const token =
   // "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiMGQ4OWYwNWFkZGM5ZmZlNGNjNGU1ZWU4NWQyOWMxODc1MGUwNzc5MzNlOGMwMDQ2NjIyMTBhYmYwZmViMjllYjg3MjI3OWZkNjgzZDFiNGMiLCJpYXQiOjE2NjU1NTE4NzIuMjgyMzAyLCJuYmYiOjE2NjU1NTE4NzIuMjgyMzA1LCJleHAiOjE2OTcwODc4NzIuMjgxMTU0LCJzdWIiOiIxNjQiLCJzY29wZXMiOltdfQ.RC0iCu3Z77FdfLzc3TNPJ3IVzloLlxP8wRNRHI5w7jrCjvfc-pRAD7jJNrRycXcZnBLxZ1OGncTXyUQPiscx7nfMgNYCXVt6BPPs_PUvBA5quP8ZgD4z3vsoJWxMgFvJAaMS_7-c7LWe5pjoQF40l6Uuv8gR-6e2DHhdw97C2PaA1slhSB0E9dGoOE8nwJYCIL4x7kHQ0IImm9hoIv1VW9ptmTqRSr9qU1ltxCCn6b2j7abWjkrpAl-azgmqzlV3RGyV0ZZpz_u4VBOXwRkjGdvrbcikfVO5nHZgsDoHed1DV4wnGz2bb7dgX64gGH2LD2c6CEvrNMUuLjH2Gred6rFAdMSK5YVddztvDaUyDAW-2BhLW5-WwSjr-LM6OqgQxX7yYmaDMgEfoggq0bPbbo-6X2IL5vGoygCmjRKK6aJxo5geFvcz8jXVAawrWaL7btes59nGzYh7KJptCwTVAzboBujxZGQU0y5AzBFAzZAudTjcpaiRvAX9iCUbb_rtRL0TiaSDQGhcWXmmYSl29-QCdjnQNAB3NKyX86FHeRsrIRekq6Dy1pFsar4qJJ-7LB6LIpJVvuZzdExQh8UOfqppn3rhydeuzipdfBFyo2CGI2IybP1ppqWGzteic-gRjZ2oL3PND9H8ZENGDlyMrGHZ3OK78LInDelpq4wY_zs";
-  const baseURL = "https://buybestthemes.com/findmyfitness_api/api";
   // GET API
 
   useEffect(() => {

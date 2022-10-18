@@ -3,15 +3,19 @@ import axios from "axios";
 import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap/dist/js/bootstrap.js";
 import { useEffect, useState } from "react";
+import Loader from './images/loader2.gif'
 import Profile from "./component/profile";
 
 export const baseURL = "https://buybestthemes.com/findmyfitness_api/api";
+// export let token1 = localStorage.getItem('token');
 
 function App() {
-  const [data, setData] = useState({})
-  const [displayProfile ,setDisplayProfile] = useState (false);
+
+  const [isLoading, setIsLoading] = useState(false);
+  // const [data, setData] = useState({})
+  // const [displayProfile ,setDisplayProfile] = useState (false);
   // Token State:
-  const [token, setToken] = useState("")
+  const [token, setToken] = useState(localStorage.getItem('token'))
   //Login Use States:
   const [email1, setemail1] = useState("trainer@gmail.com");
   const [password1, setpassword1] = useState("admin123");
@@ -28,43 +32,44 @@ function App() {
   // "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiMGQ4OWYwNWFkZGM5ZmZlNGNjNGU1ZWU4NWQyOWMxODc1MGUwNzc5MzNlOGMwMDQ2NjIyMTBhYmYwZmViMjllYjg3MjI3OWZkNjgzZDFiNGMiLCJpYXQiOjE2NjU1NTE4NzIuMjgyMzAyLCJuYmYiOjE2NjU1NTE4NzIuMjgyMzA1LCJleHAiOjE2OTcwODc4NzIuMjgxMTU0LCJzdWIiOiIxNjQiLCJzY29wZXMiOltdfQ.RC0iCu3Z77FdfLzc3TNPJ3IVzloLlxP8wRNRHI5w7jrCjvfc-pRAD7jJNrRycXcZnBLxZ1OGncTXyUQPiscx7nfMgNYCXVt6BPPs_PUvBA5quP8ZgD4z3vsoJWxMgFvJAaMS_7-c7LWe5pjoQF40l6Uuv8gR-6e2DHhdw97C2PaA1slhSB0E9dGoOE8nwJYCIL4x7kHQ0IImm9hoIv1VW9ptmTqRSr9qU1ltxCCn6b2j7abWjkrpAl-azgmqzlV3RGyV0ZZpz_u4VBOXwRkjGdvrbcikfVO5nHZgsDoHed1DV4wnGz2bb7dgX64gGH2LD2c6CEvrNMUuLjH2Gred6rFAdMSK5YVddztvDaUyDAW-2BhLW5-WwSjr-LM6OqgQxX7yYmaDMgEfoggq0bPbbo-6X2IL5vGoygCmjRKK6aJxo5geFvcz8jXVAawrWaL7btes59nGzYh7KJptCwTVAzboBujxZGQU0y5AzBFAzZAudTjcpaiRvAX9iCUbb_rtRL0TiaSDQGhcWXmmYSl29-QCdjnQNAB3NKyX86FHeRsrIRekq6Dy1pFsar4qJJ-7LB6LIpJVvuZzdExQh8UOfqppn3rhydeuzipdfBFyo2CGI2IybP1ppqWGzteic-gRjZ2oL3PND9H8ZENGDlyMrGHZ3OK78LInDelpq4wY_zs";
   // GET API
 
-  useEffect(() => {
-    console.log(data,"hellodata");
-    let token1 = localStorage.getItem('token');
-    setToken(token1)
-    console.log(token)
+  // useEffect(() => {
+  //   console.log(data,"hellodata");
+  //   setToken(token)
+  //   console.log(token)
    
-  }, [token])
+  // }, [token])
    
-  const findMyFitness = async() => {
-       await axios
-      .get(baseURL+"/my-data", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-      .then((response) => {
-        // handle success
-        console.log(response);
-        const data1 = response.data;
-        console.log(data1, 'coming');
-        setData(data1);
-       setDisplayProfile(true);
-        // const parentToChild = () => {
-        //   setData(data1);
-        // }
-      })
-      .catch(function (error) {
-        // handle error
-        console.log(error);
-      });
-  };
+  // const findMyFitness = async() => {
+  //      await axios
+  //     .get(baseURL+"/my-data", {
+  //       headers: {
+  //         Authorization: `Bearer ${token}`,
+  //       },
+  //     })
+  //     .then((response) => {
+  //       // handle success
+  //       console.log(response);
+  //       const data1 = response.data;
+  //       console.log(data1, 'coming');
+  //       setData(data1);
+  //     //  setDisplayProfile(true);
+  //       // const parentToChild = () => {
+  //       //   setData(data1);
+  //       // }
+  //     })
+  //     .catch(function (error) {
+  //       // handle error
+  //       console.log(error);
+  //     });
+  // };
 
 
 
   // LOGIN POST API
   const postLoginData = (data) => {
+    setIsLoading(true)
     console.log(email1,password1);
+   
     axios.post(baseURL+'/login',{
       email:email1,
       password:password1
@@ -78,9 +83,13 @@ function App() {
     }).then(res=>{
       console.log(res.data.token, "RESPONSE")
       localStorage.setItem('token', res.data.token, "RESPONSE");
-      findMyFitness();
+      setToken(res.data.token)
+      // findMyFitness();
+      setIsLoading(false);
     }).catch(err=>{
       console.log(err, "ERROR");
+      setIsLoading(false);
+
     })
   };
 
@@ -107,8 +116,14 @@ function App() {
   //   })
   // }
   return (
-    <div className="container">
-{!displayProfile ? (<>
+    <div className="container main">
+{isLoading ? (<>
+<div className="loader">
+  <img src={Loader} alt="loader"/>
+</div>
+</>):
+(<>
+{!token ? (<>
   <div className="login-form">
       <h2 className="text-center"> LogIn Form </h2>
       <input
@@ -131,8 +146,12 @@ function App() {
         Submit
       </button>
       </div>
-</>) : ( <Profile {...data}/>)
+</>) : ( <Profile setToken={setToken}/>)
 }
+</>
+)
+}
+
 
       
       {/* <div className="register-div pt-4">

@@ -21,7 +21,7 @@ const Trainers = () => {
     getTrainerData();
   }, []);
 
-  //Get My Data:
+  //Get Trainers Data FROM API:
   const getTrainerData = async () => {
     await axiosconfig
       .get("trainers", {
@@ -123,7 +123,7 @@ const Trainers = () => {
                 <br />
                 <b>Certifications: </b>{element.certifications}
               </Card.Text>
-              <Button variant="primary" as={Link} to={{pathname:'profile',
+              <Button variant="primary" as={Link} to={{pathname:`/profile:${element.id}`,
                                                         state: [{element}]}}>
                 Go somewhere
               </Button>

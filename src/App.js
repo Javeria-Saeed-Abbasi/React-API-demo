@@ -1,5 +1,5 @@
 import "./App.css";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Redirect, Navigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap/dist/js/bootstrap.js";
 // import Profile from "./component/profile";
@@ -15,36 +15,32 @@ import { useEffect, useState } from "react";
 import Navbar1 from "./component/Navbar";
 import AppContext from "./Provider/AppContext";
 
-
 function App() {
-  
   const [token, setToken] = useState();
   const tokenSetting = {
-    token , setToken
-  }
-  
+    token,
+    setToken,
+  };
 
-  
   useEffect(() => {
-    const value  = localStorage.getItem('token');
+    const value = localStorage.getItem("token");
     setToken(value);
-     }, [])
+  }, []);
 
   return (
     <AppContext.Provider value={tokenSetting}>
       <Container>
         {token ? (
           <>
-          <Navbar1/>
+            <Navbar1 />
             <Routes>
               <Route exact path="/" element={<Home />} />
-              <Route exact path="/profile" element={<Profile />} />
+              <Route exact path="/profile:id" element={<Profile />} />
               <Route exact path="/trainers" element={<Trainers />} />
               <Route exact path="/specialities" element={<Specialities />} />
               {/* <Route exact path="/login" element={<Login />} />
               <Route exact path="/register" element={<Register />} /> */}
             </Routes>
-          
           </>
         ) : (
           <>

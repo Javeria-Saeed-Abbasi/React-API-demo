@@ -1,10 +1,11 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Container } from "react-bootstrap";
+import { Container, InputGroup } from "react-bootstrap";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import { Link, useNavigate } from "react-router-dom";
 import AppContext from "../../Provider/AppContext";
 import axiosconfig from "../../Provider/Axios";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 export const baseURL = "https://buybestthemes.com/findmyfitness_api/api";
 
 const Register = () => {
@@ -18,7 +19,8 @@ const Register = () => {
   // const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
   const PWD_REGEX = /^[a-zA-Z0-9]*$/;
   const EMAIL_REGX = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i;
-
+  const PHONE_REGX =
+    /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/;
   //For Data Setting
   const [data, setData] = useState("");
   const context = useContext(AppContext);
@@ -30,6 +32,7 @@ const Register = () => {
   const [phone, setphone] = useState("");
   const [password, setpassword] = useState("");
   const [confirm_password, setconfirm_password] = useState("");
+  const [passwordShown, setPasswordShown] = useState(false);
 
   //Errors
   const [nameErr, setNameErr] = useState(false);
@@ -37,7 +40,7 @@ const Register = () => {
   const [rolesErr, setrolesErr] = useState(false);
   const [phoneErr, setphoneErr] = useState(false);
   const [passwordErr, setPasswordErr] = useState(false);
-  const [confPasswordErr, setConfPasswordErr] =useState(false)
+  const [confPasswordErr, setConfPasswordErr] = useState(false);
   //Disabled Submit Button
   const [isDisabled, setIsDisabled] = useState(true);
 
@@ -52,11 +55,13 @@ const Register = () => {
   function nameHandler(e) {
     let item = e.target.value;
     console.log(item);
-    if (!USERNAME_REGEX.test(item)) {
-      setNameErr(true);
-      setIsDisabled(true);
-    } else if (name.length === "0") {
+    if (!item) {
       setNameErr("Required");
+      setIsDisabled(true);
+    } else if (!USERNAME_REGEX.test(item)) {
+      setNameErr(
+        "*Invalid UserName. Only accept letters or Alpha Numeric Characters with Underscore"
+      );
       setIsDisabled(true);
     } else {
       setNameErr(false);
@@ -67,11 +72,13 @@ const Register = () => {
   function emailHandler(e) {
     let item = e.target.value;
     console.log(item);
-    if (!EMAIL_REGX.test(item)) {
-      setEmailErr(true);
-      setIsDisabled(true);
-    } else if (email.length === "0") {
+    if (!item) {
       setEmailErr("Required");
+      setIsDisabled(true);
+    } else if (!EMAIL_REGX.test(item)) {
+      setEmailErr(
+        "Please include '@' in the email address. \n Example: user@gmail.com"
+      );
       setIsDisabled(true);
     } else {
       setEmailErr(false);
@@ -82,28 +89,52 @@ const Register = () => {
   function rolesHandler(e) {
     let item = e.target.value;
     console.log(item);
-    if (!item === "user" || !item === "gym-owner"  
-    || !item === "trainer" || !item === "physiotherapist" 
-     || !item === "nutritionist" ) {
-      setEmailErr(true);
+    if (!item) {
+      setrolesErr("Required");
       setIsDisabled(true);
-    } else if (roles.length === "0") {
-      setEmailErr("Required");
+    } else if (
+      !item === "user" ||
+      !item === "gym-owner" ||
+      !item === "trainer" ||
+      !item === "physiotherapist" ||
+      !item === "nutritionist"
+    ) {
+      setrolesErr(true);
       setIsDisabled(true);
     } else {
-      setEmailErr(false);
+      setrolesErr(false);
       setIsDisabled(false);
     }
-    setemail(item);
+    setroles(item);
+  }
+  function phoneNumbHandler(e) {
+    let item = e.target.value;
+    console.log(item);
+    if (!item) {
+      setphoneErr("Required");
+      setIsDisabled(true);
+    } else if (!PHONE_REGX.test(item)) {
+      setphoneErr("Mobile Number is invalid");
+      setIsDisabled(true);
+    } else {
+      setphoneErr(false);
+      setIsDisabled(false);
+    }
+    setphone(item);
   }
   function passwordHandler(e) {
     let item = e.target.value;
     console.log(item);
-    if (!PWD_REGEX.test(item)) {
-      setPasswordErr(true);
+    if (!item) {
+      setPasswordErr("*Required");
       setIsDisabled(true);
-    } else if (password.length === "0") {
-      setPasswordErr("Required");
+    } else if (!PWD_REGEX.test(item)) {
+      setPasswordErr(
+        "*Password should contain only Alphanumeric characters.  \n  *Example: John_123"
+      );
+      setIsDisabled(true);
+    } else if (item.length >= 9) {
+      setPasswordErr("*Password should have max 8 digits.");
       setIsDisabled(true);
     } else {
       setPasswordErr(false);
@@ -114,17 +145,67 @@ const Register = () => {
   function conf_passwordHandler(e) {
     let item = e.target.value;
     console.log(item);
-    if (!PWD_REGEX.test(item) || !item === password ) {
-      setConfPasswordErr(true);
+    if (!item) {
+      setConfPasswordErr("*Required");
       setIsDisabled(true);
-    } else if (password.length === "0") {
-      setConfPasswordErr("Required");
+    } else if (!item === { password }) {
+      setConfPasswordErr("Password Not Matched");
+      setIsDisabled(true);
+    } else if (!PWD_REGEX.test(item)) {
+      setConfPasswordErr(
+        "*Password should contain only Alphanumeric characters.  \n  *Example: John_123"
+      );
+      setIsDisabled(true);
+    } else if (item.length >= 9) {
+      setConfPasswordErr("*Password should have max 8 digits.");
       setIsDisabled(true);
     } else {
       setConfPasswordErr(false);
       setIsDisabled(false);
     }
-    setpassword(item);
+    setconfirm_password(item);
+  }
+  const handleShowPassword = () => {
+    setPasswordShown(!passwordShown);
+  };
+  function SignUpButton() {
+    if (
+      name &&
+      email &&
+      roles &&
+      phone &&
+      password &&
+      confirm_password &&
+      !nameErr &&
+      !emailErr &&
+      !roles &&
+      !phoneErr &&
+      !passwordErr &&
+      !confPasswordErr
+    ) {
+      return (
+      <Button
+        variant="primary"
+        className="justify-content-end"
+        type="submit"
+        onClick={() => {
+          registerPostData();
+        }}
+      >
+        SignUp
+      </Button>);
+    } else {
+      return (
+        <Button
+          variant="primary"
+          className="justify-content-end"
+          type="submit"
+          disabled={isDisabled}
+        >
+          SignUp
+        </Button>
+      );
+    }
   }
   // REGISTER POST API
   const registerPostData = () => {
@@ -194,12 +275,13 @@ const Register = () => {
           <div>
             {nameErr ? (
               <span className="text-danger">
-                *Invalid User Name
-                <br />
-                *Only accept letters or Alpha Numeric Characters with Underscore
-                <br />
-                *Example: John_123
-                <br />
+                {nameErr}
+                {/* //   *Invalid User Name
+              //   <br />
+              //   *Only accept letters or Alpha Numeric Characters with Underscore
+              //   <br />
+              //   *Example: John_123
+              //   <br /> */}
               </span>
             ) : (
               ""
@@ -220,37 +302,27 @@ const Register = () => {
             onChange={emailHandler}
           />
           <div>
-            {emailErr ? (
-              <span className="text-danger">
-                Invalid Email
-                <br />
-                *Example: user@gmail.com
-                <br />
-              </span>
-            ) : (
-              ""
-            )}
+            {emailErr ? <span className="text-danger">{emailErr}</span> : ""}
           </div>
         </Form.Group>
 
         <Form.Group className="mb-3" controlId="formBasicSelect">
-        <Form.Label>Role</Form.Label>
-        <Form.Control
-          as="select"
-         
-          // onChange={e => {
-          //   console.log("e.target.value", e.target.value);
-          //   setType(e.target.value);
-          //}}
-          onChange={rolesHandler}
-        >
-          <option value="user">User</option>
-          <option value="gym-owner">Gym Owner</option>
-          <option value="trainer">Trainer</option>
-          <option value="physiotherapist">Physiotherapist</option>
-          <option value="nutritionist">Nutritionist</option>
-        </Form.Control>
-        {/* <div>
+          <Form.Label>Role</Form.Label>
+          <Form.Control
+            as="select"
+            // onChange={e => {
+            //   console.log("e.target.value", e.target.value);
+            //   setType(e.target.value);
+            //}}
+            onChange={rolesHandler}
+          >
+            <option value="user">User</option>
+            <option value="gym-owner">Gym Owner</option>
+            <option value="trainer">Trainer</option>
+            <option value="physiotherapist">Physiotherapist</option>
+            <option value="nutritionist">Nutritionist</option>
+          </Form.Control>
+          {/* <div>
             {rolesErr ? (
               <span className="text-danger">
                 *Invalid Role
@@ -262,7 +334,7 @@ const Register = () => {
               ""
             )}
           </div> */}
-      </Form.Group>
+        </Form.Group>
 
         {/* <Form.Group className="mb-3" controlId="formBasicRole">
           <Form.Label>Role</Form.Label>
@@ -292,33 +364,46 @@ const Register = () => {
         <Form.Group className="mb-3" controlId="formBasicPhone">
           <Form.Label>Phone Number</Form.Label>
           <Form.Control
-            type="number"
+            type="tel"
             placeholder="Enter Your Phone Number"
             // onChange={(e) => {
             //   console.log(e.target.value);
             //   setphone(e.target.value);
             // }}
+            onChange={phoneNumbHandler}
           />
+          <div>
+            {phoneErr ? <span className="text-danger">{phoneErr}</span> : ""}
+          </div>
         </Form.Group>
 
         <Form.Group className="mb-3" controlId="formBasicPassword">
           <Form.Label>Password</Form.Label>
-          <Form.Control
-            type="password"
-            placeholder="Current Password"
-            autoComplete="current-password"
-            //onChange={(e) => {
-            // console.log(e.target.value);
-            // setpassword(e.target.value);
-            //}}
-            onChange={passwordHandler}
-          />
+          <InputGroup className="">
+            <Form.Control
+              type={passwordShown ? "text" : "password"}
+              placeholder="Current Password"
+              autoComplete="current-password"
+              //onChange={(e) => {
+              // console.log(e.target.value);
+              // setpassword(e.target.value);
+              //}}
+              onChange={passwordHandler}
+              aria-describedby="basic-addon2"
+            />
+            <Button
+              variant="outline-secondary"
+              onClick={handleShowPassword}
+              id="button-addon2"
+            >
+              {passwordShown ? <FaEye /> : <FaEyeSlash />}
+            </Button>
+          </InputGroup>
+
           <div>
             {passwordErr ? (
               <span className="text-danger">
-                *Invalid Password
-                <br />
-                *Password should contain only Alphanumeric characters.
+                {passwordErr}
                 {/* *Password should contain in one Capital letter.
                         <br />
                         *Password should contain in one number.
@@ -340,22 +425,33 @@ const Register = () => {
 
         <Form.Group className="mb-3" controlId="formBasicConfirmPassword">
           <Form.Label>Confirm Password</Form.Label>
-          <Form.Control
-            type="password"
-            placeholder="Confirm Password"
-            autoComplete="new-password"
-            // onChange={(e) => {
-            //   console.log(e.target.value);
-            //   setconfirm_password(e.target.value);
-            // }}
-            onChange={conf_passwordHandler}
-          />
+          <InputGroup className="">
+            <Form.Control
+              type={passwordShown ? "text" : "password"}
+              placeholder="Confirm Password"
+              autoComplete="new-password"
+              // onChange={(e) => {
+              //   console.log(e.target.value);
+              //   setconfirm_password(e.target.value);
+              // }}
+              onChange={conf_passwordHandler}
+              aria-describedby="basic-addon2"
+            />
+            <Button
+              variant="outline-secondary"
+              onClick={handleShowPassword}
+              id="button-addon3"
+            >
+              {passwordShown ? <FaEye /> : <FaEyeSlash />}
+            </Button>
+          </InputGroup>
           <div>
             {confPasswordErr ? (
               <span className="text-danger">
-                *Password Not Matched
+                {confPasswordErr}
+                {/* *Password Not Matched
                 <br />
-                *Password should contain only Alphanumeric characters.
+                *Password should contain only Alphanumeric characters. */}
                 {/* *Password should contain in one Capital letter.
                         <br />
                         *Password should contain in one number.
@@ -385,21 +481,8 @@ const Register = () => {
             Signin
           </Button>
           &nbsp; &nbsp;
-          <Button
-            variant="primary"
-            className="justify-content-end"
-            type="submit"
-            disabled={isDisabled}
-            onClick={() => {
-              registerPostData();
-            }}
-          >
-            SignUp
-          </Button>
+          <SignUpButton />
         </div>
-        {/* <Button variant="primary" type="submit" onClick={() => {registerPostData()}}>
-        Register
-      </Button> */}
       </Form>
     </Container>
   );

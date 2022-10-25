@@ -1,5 +1,5 @@
 import React, { useState, useContext, } from "react";
-import { Container } from "react-bootstrap";
+import { Container, InputGroup } from "react-bootstrap";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import { Link, useNavigate } from "react-router-dom";
@@ -7,6 +7,8 @@ import Loader from "../../images/loader2.gif";
 import Home from "../pages/Home";
 import AppContext from "../../Provider/AppContext";
 import axiosconfig from "../../Provider/Axios";
+import { FaEye } from "react-icons/fa";
+import { FaEyeSlash } from "react-icons/fa";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -23,6 +25,7 @@ const Login = () => {
   const [email1, setemail1] = useState("");
   //password
   const [password1, setpassword1] = useState("");
+  const [passwordShown, setPasswordShown] = useState(false);
   //Errors
   const [email1Err, setEmail1Err] = useState(false);
   const [password1Err, setPassword1Err] = useState(false);
@@ -40,13 +43,15 @@ const Login = () => {
   function emailHandler(e) {
     let item = e.target.value;
     console.log(item);
-    if ((!EMAIL_REGX.test(item))) {
-      setEmail1Err(true);
-      setIsDisabled(true);
-    } else if (email1.length === "0") {
+    if (!item) {
       setEmail1Err("Required");
       setIsDisabled(true);
-    } else {
+    } 
+     else if((!EMAIL_REGX.test(item))) {
+      setEmail1Err("Please include '@' in the email address. \n Example: user@gmail.com");
+      setIsDisabled(true);
+    }
+    else {
       setEmail1Err(false);
       setIsDisabled(false);
     }
@@ -55,18 +60,50 @@ const Login = () => {
   function passwordHandler(e) {
     let item = e.target.value;
     console.log(item);
-    if ((!PWD_REGEX.test(item))) {
-      setPassword1Err(true);
+    if (!item) {
+      setPassword1Err("*Required");
       setIsDisabled(true);
-    } else if (password1.length === "0") {
-      setPassword1Err("Required");
+    } 
+     else if ((!PWD_REGEX.test(item))) {
+      setPassword1Err("*Password should contain only Alphanumeric characters.");
       setIsDisabled(true);
-    } else {
+    }
+    else if (item.length >= 9) {
+      setPassword1Err("*Password should have max 8 digits." );
+      setIsDisabled(true);
+    }
+    else {
       setPassword1Err(false);
       setIsDisabled(false);
     }
     setpassword1(item);
   }
+  const handleShowPassword=()=>{
+    setPasswordShown(!passwordShown)
+  }
+  function LoginButton(){
+    if (email1 && password1 && !email1Err && !password1Err){
+      return   <Button
+      variant="dark"
+      className="text-start"
+      type="submit"
+      onClick={() => {
+        postLoginData();
+      }}
+    >
+      Signin
+    </Button>
+    } else {
+      return <Button
+      variant="dark"
+      className="text-start"
+      type="submit"
+      disabled
+    >
+      Signin
+    </Button>
+    };
+  };
   // LOGIN POST API
   const postLoginData = (data) => {
     setIsLoading(true);
@@ -133,10 +170,7 @@ const Login = () => {
                   <div>
                     {email1Err ? (
                       <span className="text-danger">
-                        Invalid Email
-                        <br />
-                        *Example: user@gmail.com
-                        <br />
+                        {email1Err}
                       </span>
                     ) : (
                       "")}
@@ -145,21 +179,25 @@ const Login = () => {
 
                 <Form.Group className="mb-3" controlId="formBasicPassword">
                   <Form.Label>Password</Form.Label>
-                  <Form.Control
-                    type="password"
-                    placeholder="Password"
-                    // onChange={(e) => {
-                    //   console.log(e.target.value);
-                    //   setpassword1(e.target.value); //admin123
-                    // }}
-                    onChange={passwordHandler}
-                  />
-                  <div>
+                    <InputGroup className="">
+                      <Form.Control
+                         type={(passwordShown) ? "text" : "password"}
+                         placeholder="Password"
+                         // onChange={(e) => {
+                         //   console.log(e.target.value);
+                         //   setpassword1(e.target.value); //admin123
+                         // }}
+                         onChange={passwordHandler}
+                        aria-describedby="basic-addon2"
+                      />
+            <Button variant="outline-secondary" onClick={handleShowPassword} id="button-addon2">
+           {passwordShown? (<FaEye/>): (<FaEyeSlash/>) } 
+            </Button>
+                    </InputGroup>
+                    <div>
                     {password1Err ? (
                       <span className="text-danger">
-                        *Invalid Password
-                        <br />
-                        *Password should contain only Alphanumeric characters.
+                        {password1Err}
                         {/* *Password should contain in one Capital letter.
                         <br />
                         *Password should contain in one number.
@@ -179,17 +217,8 @@ const Login = () => {
                 </Form.Group>
 
                 <div className="d-flex justify-content-center">
-                  <Button
-                    variant="dark"
-                    className="text-start"
-                    type="submit"
-                    disabled={isDisabled}
-                    onClick={() => {
-                      postLoginData();
-                    }}
-                  >
-                    Signin
-                  </Button>
+                <LoginButton/>
+                
                   &nbsp; &nbsp;
                   <Button
                     variant="primary"

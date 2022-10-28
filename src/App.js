@@ -14,17 +14,22 @@ import Profile from "./component/pages/Profile";
 import { useEffect, useState } from "react";
 import Navbar1 from "./component/Navbar";
 import AppContext from "./Provider/AppContext";
+import {gapi} from 'gapi-script';
 
 function App() {
   const [token, setToken] = useState();
+  const [g_UserData, setG_UserData] = useState();
   const tokenSetting = {
     token,
     setToken,
+    g_UserData,
+    setG_UserData,
   };
 
   useEffect(() => {
     const value = localStorage.getItem("token");
     setToken(value);
+    
   }, []);
 
   return (
@@ -52,6 +57,7 @@ function App() {
         )}
       </Container>
     </AppContext.Provider>
+    
   );
 }
 

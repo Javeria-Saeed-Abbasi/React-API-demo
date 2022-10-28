@@ -7,9 +7,13 @@ import NavItem from 'react-bootstrap/Navitem';
 import { Switch, Route, useNavigate} from 'react-router-dom';
 import { Link } from "react-router-dom";
 import AppContext from '../Provider/AppContext';
+import {gapi} from 'gapi-script';
+import { useGoogleLogout } from 'react-google-login';
 
 const Navbar1 = () => {
 
+  //GOOGLE LOGIN Client_Id:
+  const client_id = "459140099344-ikj8jh2ff3ud5a5gi72s1itqqcgl3qn4.apps.googleusercontent.com";
   // const [token, setToken] = useState(localStorage.getItem("token"));
   const context = useContext(AppContext);
   const navigate = useNavigate();
@@ -20,9 +24,16 @@ const profileLogout = () =>{
   context.setToken(null);
    // 👇️ navigate to /login
    navigate('/');
+  
 }
+const onLogoutSuccess = () => {
 
+      console.log("LOGOUT SUCCESSFUL!");
+};
+const onLogoutFailure= () => {
+  console.log("LOGOUT FAILURE!");
 
+};
   return (
     <div>
        <Navbar bg="dark" variant="dark">
@@ -52,8 +63,14 @@ const profileLogout = () =>{
           </NavItem>
 
            <NavItem to="mr-auto">
-              <Button variant="primary" className="logout-btn" onClick={profileLogout}>Logout</Button>
+              <Button variant="primary" className="g-logout-btn" onClick={profileLogout}
+               clientId={client_id}
+               buttonText='Logout'
+               onLogoutSuccess={onLogoutSuccess}
+               onLogoutFailure={onLogoutFailure}
+              >Logout</Button>
            </NavItem>
+
           </Nav>
         </Container>
       </Navbar>

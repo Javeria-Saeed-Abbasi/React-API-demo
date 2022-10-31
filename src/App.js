@@ -19,11 +19,20 @@ import {gapi} from 'gapi-script';
 function App() {
   const [token, setToken] = useState();
   const [g_UserData, setG_UserData] = useState();
+  const [type , setType ] =useState();
+  const [g_name, setG_name] = useState();
+  const [trainerData, setTrainerData] = useState ();
   const tokenSetting = {
     token,
     setToken,
     g_UserData,
     setG_UserData,
+    type,
+    setType,
+    g_name,
+    setG_name,
+    trainerData,
+    setTrainerData,
   };
 
   useEffect(() => {

@@ -33,9 +33,14 @@ const Trainers = () => {
         // handle success
         const data1 = response.data;
         console.log(data1.data, "Trainers Data");
+        console.log(data1?.data[0].user, "Trainers user Data");
+        const trainerUsername = (data1?.data[0].user);
+        context.setTrainerData(trainerUsername);
+        localStorage.setItem('trainerName' , data1?.data[0].user.name);
         setData(data1?.data);
-        setSelectedFile(data1?.data.image);
-       
+        setSelectedFile(data1?.data[0].user.image);
+      
+        
       })
       .catch(function (error) {
         // handle error
@@ -111,7 +116,7 @@ const Trainers = () => {
             </Button>
     
             <Card.Body>
-              <Card.Title>Name: {element.name}</Card.Title>
+              <Card.Title>Name: {data[0].user.name}</Card.Title>
               <Card.Text>
                 {/* <b>Id:</b> {element.id}
                 <br />
